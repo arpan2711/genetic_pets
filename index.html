@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Genetic Pets</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header id="hud">
+        <div class="hud-group">
+          <span class="hud-label">Generation</span>
+          <span id="stat-generation" class="hud-value">0</span>
+        </div>
+        <div class="hud-group">
+          <span class="hud-label">Best fitness</span>
+          <span id="stat-best" class="hud-value">0</span>
+        </div>
+        <div class="hud-group">
+          <span class="hud-label">Avg fitness</span>
+          <span id="stat-avg" class="hud-value">0</span>
+        </div>
+        <div class="hud-spacer"></div>
+        <div class="hud-group">
+          <button id="btn-pause" class="hud-btn">Pause</button>
+          <button class="hud-btn speed-btn" data-speed="1">1x</button>
+          <button class="hud-btn speed-btn" data-speed="4">4x</button>
+          <button class="hud-btn speed-btn" data-speed="16">16x</button>
+        </div>
+      </header>
+      <canvas id="canvas"></canvas>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

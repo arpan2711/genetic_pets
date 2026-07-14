@@ -1,0 +1,81 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #10141a;
+  color: #e6e9ef;
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#hud {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 10px 16px;
+  background: #171c24;
+  border-bottom: 1px solid #262d38;
+  font-size: 14px;
+}
+
+.hud-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-label {
+  color: #8b93a3;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.hud-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #ffcf6e;
+}
+
+.hud-spacer {
+  flex: 1;
+}
+
+.hud-btn {
+  background: #232a35;
+  border: 1px solid #333c4a;
+  color: #e6e9ef;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.hud-btn:hover {
+  background: #2b3340;
+}
+
+.hud-btn.active {
+  background: #3b5bdb;
+  border-color: #3b5bdb;
+}
+
+#canvas {
+  flex: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
