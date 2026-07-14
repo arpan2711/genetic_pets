@@ -42,20 +42,23 @@ function updateHud(): void {
   statAvg.textContent = population.lastAvg.toFixed(1);
 }
 
+function updateCamera(): void {
+  const best = population.bestCreature();
+  const targetCamera = Math.max(0, best.centerX() - canvas.width * 0.3);
+  cameraX += (targetCamera - cameraX) * 0.05;
+}
+
 function tick(): void {
   if (!paused) {
     for (let i = 0; i < speed; i++) {
       population.step();
+      updateCamera();
       if (population.isGenerationDone()) {
         population.nextGeneration();
         updateHud();
       }
     }
   }
-
-  const best = population.bestCreature();
-  const targetCamera = Math.max(0, best.centerX() - canvas.width * 0.3);
-  cameraX += (targetCamera - cameraX) * 0.05;
 
   drawFrame(ctx, population, cameraX);
   requestAnimationFrame(tick);
