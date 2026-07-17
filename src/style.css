@@ -44,6 +44,14 @@ html, body {
   letter-spacing: 0.05em;
 }
 
+.hud-title-text {
+  font-weight: 700;
+  font-size: 15px;
+  color: #e6e9ef;
+  padding-right: 8px;
+  border-right: 1px solid #262d38;
+}
+
 .hud-value {
   font-variant-numeric: tabular-nums;
   font-weight: 600;

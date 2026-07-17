@@ -1,8 +1,8 @@
 # Genetic Pets
 
-A browser-based evolution simulator: soft-body creatures made of point-mass "nodes" connected by oscillating "muscles" are dropped into a 2D world with gravity and ground friction. Each generation, every creature is scored on how far it travels; the fittest are bred (with mutation) into the next generation. Over time, locomotion strategies emerge — walking, hopping, crawling — with no hand-coded animation, purely from selection pressure.
+A browser-based evolution simulator starring **Jitterlings**: soft-body creatures made of point-mass "nodes" connected by oscillating "muscles" are dropped into a 2D world with gravity and ground friction. Each generation, every Jitterling is scored on how far it travels; the fittest are bred (with mutation) into the next generation. Over time, locomotion strategies emerge — walking, hopping, crawling, and occasionally something stranger — with no hand-coded animation, purely from selection pressure.
 
-Inspired by [David Randall Miller's "I programmed some creatures. They Evolved."](https://youtu.be/N3tRFayqVtk)
+Inspired by [David Randall Miller's "I programmed some creatures. They Evolved."](https://youtu.be/N3tRFayqVtk). See [docs/SCIENCE.md](docs/SCIENCE.md) for the genetic-algorithm concepts behind this project and how the experiments below connect to them.
 
 ## How it works
 
@@ -11,6 +11,17 @@ Inspired by [David Randall Miller's "I programmed some creatures. They Evolved."
 - **Physics**: custom lightweight Verlet-style integration — gravity, ground collision, friction. No physics engine dependency.
 - **Fitness**: net horizontal distance traveled during a fixed simulation window.
 - **Evolution**: each generation, the population is ranked by fitness; top performers survive and are mutated (and optionally crossed over) to fill the next generation.
+
+## Life cycle of a generation
+
+Every generation runs the same four-stage loop — this is the actual genetic algorithm, one full cycle from a real run:
+
+![Life cycle of a generation](docs/life-cycle.png)
+
+1. **Spawn** — the current population's genomes are built into physical Jitterlings, all placed at the start line.
+2. **Simulate** — muscles oscillate, physics runs, and Jitterlings move (or don't) for a fixed window (360 steps, ~6 simulated seconds).
+3. **Score** — each Jitterling's fitness is its net horizontal distance when the window ends.
+4. **Select & spawn** — elites survive unchanged, the rest of the next population is bred via tournament-selected mutation (plus a couple of fresh random genomes), and the loop restarts at Spawn.
 
 ## Stack
 
@@ -27,7 +38,7 @@ Then open the printed local URL in your browser.
 
 ## Current functioning
 
-**Generation 1** — random genomes, no selection pressure yet. Creatures are small tangles of nodes/muscles twitching roughly in place.
+**Generation 1** — random genomes, no selection pressure yet. Jitterlings are small tangles of nodes/muscles twitching roughly in place.
 
 ![Generation 1](docs/generation-1.png)
 
@@ -63,7 +74,7 @@ Ran the same setup for 479 generations (~3 minutes at 16x) to see what happens p
 ![Fitness over a 479-generation run](docs/fitness-chart-long.png)
 
 - **It plateaus hard, and stays there.** Best fitness climbed fast for the first ~250 generations, then locked at 2,820px from generation ~247 through 479 (230+ generations, no improvement at all).
-- **The winning "creature" is a degenerate trick, not a walker.** The elite genome that took over is a tiny 3-node body (visible far ahead of the rest of the pack in the generation-481 screenshot) that discovered some cheap flipping/launching motion instead of anything gait-like. Once elitism locks that in, later mutations of it rarely beat it, because there's little left to improve on a 3-node structure — the trick is already close to maximally exploiting the physics.
+- **The winning Jitterling is a degenerate trick, not a walker.** The elite genome that took over is a tiny 3-node body (visible far ahead of the rest of the pack in the generation-481 screenshot) that discovered some cheap flipping/launching motion instead of anything gait-like. Once elitism locks that in, later mutations of it rarely beat it, because there's little left to improve on a 3-node structure — the trick is already close to maximally exploiting the physics.
 - **Average fitness didn't converge toward best this time — it went the other way.** It peaked around generation 120-150 (~1,000-1,400px) then drifted down and stayed noisy in the 400-1,000px range for the rest of the run, well below its own earlier peak. Comparing this to an earlier 107-generation run (where average tracked much closer to best) suggests the *specific* elite genome matters a lot: a fragile, minimal-body trick doesn't tolerate mutation well, so most offspring of the champion fall far short of it, unlike a more robust body plan.
 - **Runs are not very reproducible in outcome.** Two independent long runs plateaued at different fitness values via different strategies (one shows average catching up to best, the other shows a widening gap) — a reminder that with a small population (20) and mutation-only reproduction, early random draws have an outsized effect on where the whole run ends up.
 
