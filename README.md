@@ -4,11 +4,14 @@ A browser-based evolution simulator starring **Jitterlings**: soft-body creature
 
 Inspired by [David Randall Miller's "I programmed some creatures. They Evolved."](https://youtu.be/N3tRFayqVtk). See [docs/SCIENCE.md](docs/SCIENCE.md) for the genetic-algorithm concepts behind this project and how the experiments below connect to them.
 
+**Current version: v2** — Jitterlings now physically collide instead of passing through each other. See [v2: collision](#v2-collision-pets-stop-passing-through-each-other) below for what that changes.
+
 ## How it works
 
 - **Creature**: a small graph of nodes (mass points) and muscles (springs whose rest length oscillates sinusoidally over time).
 - **Genome**: per-creature parameters — node layout, muscle connections, and each muscle's amplitude/phase/frequency/base length.
 - **Physics**: custom lightweight Verlet-style integration — gravity, ground collision, friction. No physics engine dependency.
+- **Collision**: nodes belonging to different Jitterlings can't overlap — overlapping bodies get pushed apart, so the population never visually merges into a single blob.
 - **Fitness**: net horizontal distance traveled during a fixed simulation window.
 - **Evolution**: each generation, the population is ranked by fitness; top performers survive and are mutated (and optionally crossed over) to fill the next generation.
 
@@ -108,6 +111,32 @@ This also surfaced a real bug: at high sim speed the camera (which follows the l
 - Track fitness *variance* across runs, not just one run's curve — a single chart understates how much outcomes vary between seeds.
 - A larger population or occasional "restart a few individuals from scratch" mechanism to reduce the chance the whole population gets stuck around one fragile champion.
 
+## v2: collision — pets stop passing through each other
+
+Everything above (Interface, Analysis, Longer runs) was v1, where Jitterlings had no concept of each other's bodies and could freely overlap. v2 adds two changes: nodes belonging to different Jitterlings now push apart instead of overlapping (`src/physics/collision.ts`), and spawn positions are staggered into a row instead of stacking every creature at the exact same point (`spawnX()` in `src/sim/Population.ts`) — the first version of collision caused a violent one-time "explosion" as 20 fully-overlapped bodies suddenly turned solid; staggering the start row fixes that:
+
+![Softened spawn under v2](docs/v2-spawn-softened.png)
+
+Re-ran the same kind of long experiment as before (479 generations, population 20) under v2 physics to see what changed:
+
+![Generation 1, v2](docs/v2-gen1.png)
+
+![Generation 241, v2](docs/v2-gen241.png)
+
+![Generation 481, v2](docs/v2-gen481.png)
+
+![Fitness by generation, v2](docs/fitness-chart-v2.png)
+
+- **The fitness ceiling collapsed.** v1 runs reached best fitness in the thousands (2,332-4,559px seen in earlier experiments). This v2 run topped out at 457px and closed at 414px, 479 generations in — collision physically blocks the unimpeded "flip and launch" strategies that dominated v1, since a body can no longer fling itself through a crowd of others.
+- **Elitism's core guarantee breaks.** In every v1 run, best fitness was non-decreasing by construction — the top genome is cloned unchanged each generation, so it can only be replaced by something *better*. With collision, a genome's fitness now depends on which other genomes it happens to share the field with (they physically obstruct or nudge it), so the *same* elite genome can score differently from one generation to the next. Measured directly: best fitness actually **dropped** from the previous generation in 237 of 478 transitions (~50% of the time) — something structurally impossible in any v1 run.
+- **The population mostly just jostles.** Average fitness across the whole run sat near zero (-1px mean, ranging -68 to +47px) — most Jitterlings spend the run being crowded rather than making net progress, visible in the generation-481 screenshot as a dense, mutually-blocked pack.
+
+### Ideas this suggests
+
+- The fitness function (raw horizontal displacement) may need to change under collision — e.g. reward sustained velocity, or measure relative-to-population progress, so getting boxed in by rivals doesn't dominate the score.
+- A less densely-packed population (smaller population, or a wider start row) would keep "solid bodies" without so thoroughly capping forward progress.
+- Since elitism no longer guarantees monotonic improvement, tracking *best-fitness-ever* (already recorded as `Population.bestFitnessEver`) separately from *current best* becomes more meaningful than before.
+
 ## Status
 
-Core simulation loop, physics, genetic algorithm, pet-like rendering, and a generation-history inspector are all working end-to-end (see Analysis above for a real run). Next: crossover and richer creature morphologies.
+Core simulation loop, physics (now with inter-creature collision), genetic algorithm, pet-like rendering, and a generation-history inspector are all working end-to-end (see Analysis and v2 sections above for real runs). Next: revisiting the fitness function for a collision-aware world, crossover, and richer creature morphologies.

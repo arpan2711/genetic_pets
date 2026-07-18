@@ -8,6 +8,12 @@ const ELITISM_COUNT = 2;
 const RANDOM_COUNT = 2;
 const TOURNAMENT_SIZE = 3;
 const START_X = 150;
+const SPAWN_SPACING = 16;
+
+/** Staggers spawn positions in a row so bodies start mostly apart instead of stacked on top of each other. */
+function spawnX(index: number, count: number): number {
+  return START_X + (index - (count - 1) / 2) * SPAWN_SPACING;
+}
 
 export interface GenerationRecord {
   generation: number;
@@ -29,7 +35,7 @@ export class Population {
 
   constructor() {
     this.genomes = Array.from({ length: POPULATION_SIZE }, () => randomGenome());
-    this.creatures = this.genomes.map((g) => new Creature(g, START_X));
+    this.creatures = this.genomes.map((g, i) => new Creature(g, spawnX(i, this.genomes.length)));
   }
 
   step(): void {
@@ -78,7 +84,7 @@ export class Population {
     }
 
     this.genomes = nextGenomes;
-    this.creatures = this.genomes.map((g) => new Creature(g, START_X));
+    this.creatures = this.genomes.map((g, i) => new Creature(g, spawnX(i, this.genomes.length)));
     this.age = 0;
     this.generation++;
   }
