@@ -1,6 +1,7 @@
 import { Genome, randomGenome, mutateGenome, cloneGenome, DEFAULT_MUTATION_RATE } from "../genetics/genome";
 import { Creature } from "./Creature";
 import { GENERATION_DURATION_STEPS } from "../physics/constants";
+import { resolveBodyCollisions } from "../physics/collision";
 
 const POPULATION_SIZE = 20;
 const ELITISM_COUNT = 2;
@@ -35,6 +36,7 @@ export class Population {
     for (const creature of this.creatures) {
       creature.step();
     }
+    resolveBodyCollisions(this.creatures.map((c) => c.nodes));
     this.age++;
   }
 
