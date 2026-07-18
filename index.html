@@ -26,6 +26,16 @@
         </div>
         <div class="hud-spacer"></div>
         <div class="hud-group">
+          <button id="btn-reset" class="hud-btn">Reset</button>
+          <button id="btn-focus" class="hud-btn">Focus: All</button>
+          <label class="hud-group hud-slider-group">
+            <span class="hud-label">Mutation</span>
+            <input id="mutation-slider" type="range" min="0" max="0.6" step="0.01" value="0.15" />
+            <span id="mutation-value" class="hud-value">0.15</span>
+          </label>
+        </div>
+        <div class="hud-group">
+          <button id="btn-history" class="hud-btn">History</button>
           <button id="btn-pause" class="hud-btn">Pause</button>
           <button class="hud-btn speed-btn" data-speed="1">1x</button>
           <button class="hud-btn speed-btn" data-speed="4">4x</button>
@@ -33,6 +43,18 @@
         </div>
       </header>
       <canvas id="canvas"></canvas>
+      <aside id="history-panel">
+        <div class="panel-header">
+          <span>Generation history</span>
+          <button id="panel-close" class="hud-btn">Close</button>
+        </div>
+        <div id="panel-list" class="panel-list"></div>
+        <div id="panel-inspector" class="panel-inspector" hidden>
+          <button id="inspector-back" class="hud-btn">&larr; Back to list</button>
+          <canvas id="inspector-canvas" width="280" height="160"></canvas>
+          <table id="inspector-stats" class="panel-stats"></table>
+        </div>
+      </aside>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

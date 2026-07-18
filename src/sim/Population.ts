@@ -1,4 +1,4 @@
-import { Genome, randomGenome, mutateGenome, cloneGenome } from "../genetics/genome";
+import { Genome, randomGenome, mutateGenome, cloneGenome, DEFAULT_MUTATION_RATE } from "../genetics/genome";
 import { Creature } from "./Creature";
 import { GENERATION_DURATION_STEPS } from "../physics/constants";
 
@@ -8,6 +8,13 @@ const RANDOM_COUNT = 2;
 const TOURNAMENT_SIZE = 3;
 const START_X = 150;
 
+export interface GenerationRecord {
+  generation: number;
+  bestGenome: Genome;
+  bestFitness: number;
+  avgFitness: number;
+}
+
 export class Population {
   genomes: Genome[];
   creatures: Creature[];
@@ -16,6 +23,8 @@ export class Population {
   bestFitnessEver = 0;
   lastBest = 0;
   lastAvg = 0;
+  mutationRate = DEFAULT_MUTATION_RATE;
+  history: GenerationRecord[] = [];
 
   constructor() {
     this.genomes = Array.from({ length: POPULATION_SIZE }, () => randomGenome());
@@ -44,6 +53,13 @@ export class Population {
     this.lastAvg = ranked.reduce((sum, c) => sum + c.fitness(), 0) / ranked.length;
     this.bestFitnessEver = Math.max(this.bestFitnessEver, this.lastBest);
 
+    this.history.push({
+      generation: this.generation,
+      bestGenome: cloneGenome(ranked[0].genome),
+      bestFitness: this.lastBest,
+      avgFitness: this.lastAvg,
+    });
+
     const nextGenomes: Genome[] = [];
 
     for (let i = 0; i < ELITISM_COUNT && i < ranked.length; i++) {
@@ -56,7 +72,7 @@ export class Population {
 
     while (nextGenomes.length < POPULATION_SIZE) {
       const parent = this.tournamentSelect(ranked);
-      nextGenomes.push(mutateGenome(parent.genome));
+      nextGenomes.push(mutateGenome(parent.genome, this.mutationRate));
     }
 
     this.genomes = nextGenomes;

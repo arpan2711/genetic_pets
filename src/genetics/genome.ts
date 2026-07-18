@@ -16,6 +16,7 @@ export interface MuscleGene {
 export interface Genome {
   nodes: NodeGene[];
   muscles: MuscleGene[];
+  hue: number;
 }
 
 function rand(min: number, max: number): number {
@@ -60,7 +61,7 @@ export function randomGenome(): Genome {
     }
   }
 
-  return { nodes, muscles };
+  return { nodes, muscles, hue: rand(0, 360) };
 }
 
 function makeMuscleGene(nodes: NodeGene[], a: number, b: number): MuscleGene {
@@ -82,35 +83,40 @@ export function cloneGenome(genome: Genome): Genome {
   return {
     nodes: genome.nodes.map((n) => ({ ...n })),
     muscles: genome.muscles.map((m) => ({ ...m })),
+    hue: genome.hue,
   };
 }
 
-const MUTATION_RATE = 0.15;
+export const DEFAULT_MUTATION_RATE = 0.15;
 
-export function mutateGenome(genome: Genome): Genome {
+export function mutateGenome(genome: Genome, mutationRate: number = DEFAULT_MUTATION_RATE): Genome {
   const clone = cloneGenome(genome);
 
+  if (Math.random() < mutationRate) {
+    clone.hue = (clone.hue + rand(-15, 15) + 360) % 360;
+  }
+
   for (const node of clone.nodes) {
-    if (Math.random() < MUTATION_RATE) {
+    if (Math.random() < mutationRate) {
       node.x += rand(-8, 8);
       node.y += rand(-8, 8);
     }
   }
 
   for (const muscle of clone.muscles) {
-    if (Math.random() < MUTATION_RATE) {
+    if (Math.random() < mutationRate) {
       muscle.stiffness = clamp(muscle.stiffness + rand(-0.15, 0.15), 0.1, 1);
     }
-    if (Math.random() < MUTATION_RATE) {
+    if (Math.random() < mutationRate) {
       muscle.baseLength = Math.max(5, muscle.baseLength + rand(-6, 6));
     }
-    if (Math.random() < MUTATION_RATE) {
+    if (Math.random() < mutationRate) {
       muscle.amplitude = Math.max(0, muscle.amplitude + rand(-6, 6));
     }
-    if (Math.random() < MUTATION_RATE) {
+    if (Math.random() < mutationRate) {
       muscle.frequency = clamp(muscle.frequency + rand(-0.4, 0.4), 0.1, 4);
     }
-    if (Math.random() < MUTATION_RATE) {
+    if (Math.random() < mutationRate) {
       muscle.phase = muscle.phase + rand(-0.6, 0.6);
     }
   }

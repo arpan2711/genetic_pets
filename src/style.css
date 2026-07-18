@@ -19,12 +19,14 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
 }
 
 #hud {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   padding: 10px 16px;
   background: #171c24;
   border-bottom: 1px solid #262d38;
@@ -81,9 +83,119 @@ html, body {
   border-color: #3b5bdb;
 }
 
+.hud-slider-group input[type="range"] {
+  width: 90px;
+  accent-color: #3b5bdb;
+}
+
 #canvas {
   flex: 1;
   display: block;
   width: 100%;
   height: 100%;
+}
+
+#history-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  background: #171c24;
+  border-left: 1px solid #262d38;
+  box-shadow: -12px 0 24px rgba(0, 0, 0, 0.35);
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+
+#history-panel.open {
+  transform: translateX(0);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid #262d38;
+  font-weight: 600;
+}
+
+.panel-list:not([hidden]) {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.panel-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1c222c;
+  border: 1px solid #262d38;
+  color: #e6e9ef;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+
+.panel-list-item:hover {
+  background: #232a35;
+}
+
+.panel-list-fitness {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #ffcf6e;
+}
+
+.panel-empty {
+  color: #8b93a3;
+  font-size: 13px;
+  padding: 8px 4px;
+}
+
+.panel-inspector:not([hidden]) {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#inspector-canvas {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #262d38;
+  background: #10141a;
+}
+
+.panel-stats {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.panel-stats td {
+  padding: 4px 0;
+  border-bottom: 1px solid #21262f;
+}
+
+.panel-stats td:first-child {
+  color: #8b93a3;
+}
+
+.panel-stats td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
