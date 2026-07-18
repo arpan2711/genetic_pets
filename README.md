@@ -23,6 +23,28 @@ Every generation runs the same four-stage loop — this is the actual genetic al
 3. **Score** — each Jitterling's fitness is its net horizontal distance when the window ends.
 4. **Select & spawn** — elites survive unchanged, the rest of the next population is bred via tournament-selected mutation (plus a couple of fresh random genomes), and the loop restarts at Spawn.
 
+## Interface
+
+Each Jitterling now renders as a soft translucent body (the convex hull of its nodes) in a color inherited — and slightly drifting — from its parent, plus a small eye that leans toward its direction of travel. Less physics diagram, more pet:
+
+![Overview with the current UI](docs/ui-overview.png)
+
+**Focus mode** hides everyone but the current leader, so you can actually watch one Jitterling instead of a crowd:
+
+![Focus mode on the leader](docs/ui-focus-leader.png)
+
+Other controls: **Reset** starts a fresh random population, and the **mutation-rate slider** adjusts `Population.mutationRate` live.
+
+### Isolating and inspecting a past generation
+
+Every completed generation's champion genome is archived (`Population.history`). The **History** panel lists them by best fitness:
+
+![Generation history panel](docs/ui-history-list.png)
+
+Selecting one pauses the main simulation and replays that single archived Jitterling by itself, on a loop, next to a table of its genome stats:
+
+![Inspecting a single Jitterling from a past generation](docs/ui-history-inspector.png)
+
 ## Stack
 
 TypeScript + HTML5 Canvas, built with Vite. Runs entirely client-side.
@@ -88,4 +110,4 @@ This also surfaced a real bug: at high sim speed the camera (which follows the l
 
 ## Status
 
-Core simulation loop, physics, and genetic algorithm are working end-to-end (see Analysis above for a real run). Next: crossover, richer creature morphologies, and a persisted leaderboard of best genomes.
+Core simulation loop, physics, genetic algorithm, pet-like rendering, and a generation-history inspector are all working end-to-end (see Analysis above for a real run). Next: crossover and richer creature morphologies.
